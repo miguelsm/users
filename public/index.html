@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Usuarios</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="//code.angularjs.org/1.2.3/angular.min.js"></script>
+    <script src="//code.angularjs.org/1.2.3/angular-resource.min.js"></script>
+    <script src="//code.angularjs.org/1.2.3/angular-animate.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+  </head>
+
+  <body ng-app="usuariosApp" ng-controller="UsuariosCtrl">
+    <div class="alerts-bar">
+      <div ng-repeat="a in alerts" class="alert alert-{{ a.type }}">
+        <span ng-bind="a.msg"></span>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row row-tabs">
+        <div class="col-xs-12">
+          <ul class="nav nav-tabs" ng-init="tabIndex = 0">
+            <li ng-class="{ active: tabIndex === 0 }"><a href="" ng-click="tabIndex = 0">Buscar usuarios</a></li>
+            <li ng-class="{ active: tabIndex === 1 }"><a href="" ng-click="tabIndex = 1">Crear usuario</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="container" ng-show="tabIndex === 0">
+        <div class="row">
+          <div class="col-xs-10 col-xs-offset-1">
+            <form class="form-horizontal" ng-submit="queryUsuarios()">
+              <div class="form-group">
+                <label for="nombre1" class="col-xs-2 control-label">Nombre</label>
+                <div class="col-xs-10">
+                  <input type="text" class="form-control" id="nombre1" placeholder="Nombre" ng-model="filtro.nombre">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="apellidos1" class="col-xs-2 control-label">Apellidos</label>
+                <div class="col-xs-10">
+                  <input type="text" class="form-control" id="apellidos1" placeholder="Apellidos" ng-model="filtro.apellidos">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-xs-offset-2 col-xs-10">
+                  <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>&nbsp;
+                  <a href="" ng-click="filtro = {}"><i class="fa fa-eraser"></i> Limpiar filtro</a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-10 col-xs-offset-1">
+            <p class="text-center" ng-show="usuarios.length === 0">No se ha encontrado ningún usuario.</p>
+            <table ng-show="usuarios.length > 0" class="table table-hover table-results">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Nombre</th>
+                  <th colspan="2">Apellidos</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat-start="usuario in usuarios">
+                  <td class="cell-actions">
+                    <a href="" ng-click="editUsuario(usuario)" title="Editar"><i class="fa fa-edit"></i></a>
+                    <a href="" ng-click="deleteUsuario(usuario)" title="Eliminar"><i class="fa fa-trash-o"></i></a>
+                  </td>
+                  <td>
+                    <span ng-bind="usuario.nombre"></span>
+                  </td>
+                  <td colspan="2">
+                    <span ng-bind="usuario.apellidos"></span>
+                  </td>
+                </tr>
+                <tr ng-repeat-end="" ng-show="usuario.edicion">
+                  <td></td>
+                  <td>
+                    <input type="text" class="form-control" ng-model="usuario.edicion.nombre">
+                  </td>
+                  <td>
+                    <input type="text" class="form-control" ng-model="usuario.edicion.apellidos">
+                  </td>
+                  <td class="text-right">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-default" title="Guardar" ng-click="updateUsuario(usuario)"><i class="fa fa-check"></i></button>
+                      <button type="button" class="btn btn-default" title="Cancelar" ng-click="usuario.edicion = null"><i class="fa fa-times"></i></button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="container" ng-show="tabIndex === 1">
+        <div class="row" ng-show="tabIndex === 1">
+          <div class="col-xs-10 col-xs-offset-1">
+            <form name="formAlta" class="form-horizontal" ng-submit="addUsuario()" novalidate>
+              <div class="form-group">
+                <label for="nombre3" class="col-xs-2 control-label">Nombre</label>
+                <div class="col-xs-10">
+                  <input type="text" class="form-control" id="nombre3" placeholder="Nombre" ng-model="nuevoUsuario.nombre" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="apellidos3" class="col-xs-2 control-label">Apellidos</label>
+                <div class="col-xs-10">
+                  <input type="text" class="form-control" id="apellidos3" placeholder="Apellidos" ng-model="nuevoUsuario.apellidos">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-xs-offset-2 col-xs-10">
+                  <button type="submit" class="btn btn-success" ng-disabled="formAlta.$invalid"><i class="fa fa-plus"></i> Añadir</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="app.js"></script>
+    <script src="services.js"></script>
+    <script src="controllers.js"></script>
+  </body>
+
+</html>
