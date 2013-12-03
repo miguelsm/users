@@ -18,8 +18,14 @@
 
   <body ng-app="usuariosApp" ng-controller="UsuariosCtrl">
     <div class="alerts-bar">
-      <div ng-repeat="a in alerts" class="alert alert-{{ a.type }}">
-        <span ng-bind="a.msg"></span>
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-8 col-sm-offset-2">
+            <div ng-repeat="a in alerts" class="alert alert-{{ a.type }}">
+              <span ng-bind="a.msg"></span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="container">
